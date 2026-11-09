@@ -1,6 +1,6 @@
 # Gold Layer examples
 
-Worked Power BI and Fabric examples from [Gold Layer](https://jonathan-pap.github.io/), built on
+Worked Power BI and Fabric examples from [Gold Layer](https://goldlayerdata.com/), built on
 open datasets so you can rebuild every one of them yourself.
 
 Each post or short on the site that shows a technique on real-looking data points to an
