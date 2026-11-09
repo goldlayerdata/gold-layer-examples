@@ -1,0 +1,38 @@
+/// Folder holding the Contoso Parquet files (datasets/contoso/data/latest/ in gold-layer-examples), with a trailing backslash. Point it at your own clone.
+expression DataFolder = "E:\git-page\gold-layer-examples\datasets\contoso\data\latest\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 9d7ad27b-dd9a-4351-9b3a-fd75bbe61ff9
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navigation
+
+/// The as-of day: 'today' caps every fact at the refreshing machine's date; a fixed ISO date (yyyy-MM-dd, e.g. 2026-11-09) freezes the numbers for article examples.
+expression AsOfDate = "today" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: 3ecf8c5f-5c83-487f-ab36-1a179f4b768b
+
+	annotation PBI_ResultType = Text
+
+	annotation PBI_NavigationStepName = Navigation
+
+/// The day facts are cut at: today when AsOfDate is 'today' (or blank), otherwise AsOfDate parsed as yyyy-MM-dd.
+expression AsOf =
+		let
+		    Setting = Text.Lower(Text.Trim(AsOfDate)),
+		    Result = if Setting = "today" or Setting = "" then Date.From(DateTime.LocalNow()) else Date.FromText(Text.Trim(AsOfDate), [Format = "yyyy-MM-dd", Culture = "en-US"])
+		in
+		    Result
+	lineageTag: ab0a9635-e1af-4333-b096-058615ad7e4d
+
+	annotation PBI_ResultType = Date
+
+/// Turns the Parquet UTC timestamps into dates: DateTimeZone.RemoveZone, then Date.From, typed as date. Nulls stay null.
+expression fnToDate =
+		(tbl as table, cols as list) as table =>
+		    Table.TransformColumns(
+		        tbl,
+		        List.Transform(cols, (c) => {c, each if _ = null then null else Date.From(if _ is datetimezone then DateTimeZone.RemoveZone(_) else _), type date})
+		    )
+	lineageTag: d78235ff-c49d-46cf-9002-34891785e99f
+
+	annotation PBI_ResultType = Function
+

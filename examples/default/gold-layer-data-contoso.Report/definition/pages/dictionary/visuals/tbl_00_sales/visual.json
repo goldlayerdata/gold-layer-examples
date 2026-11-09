@@ -1,0 +1,813 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "tbl_00_sales",
+  "position": {
+    "x": 64,
+    "y": 236,
+    "z": 1000,
+    "width": 581,
+    "height": 951,
+    "tabOrder": 1
+  },
+  "visual": {
+    "visualType": "textbox",
+    "objects": {
+      "general": [
+        {
+          "properties": {
+            "paragraphs": [
+              {
+                "textRuns": [
+                  {
+                    "value": "FACT",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "10pt",
+                      "color": "#F2C811"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "sales",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "18pt",
+                      "color": "#E8ECF5"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Fact, one row per order line (flat star). Cut at AsOf: no order after it, and DeliveryDate is blank where the delivery is still to come.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10.5pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "8pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "OrderKey",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Order number. One order has one or more lines.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "LineNumber",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Line number within the order, starting at 0.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "OrderDate",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   date",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  },
+                  {
+                    "value": "   → date",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#F2C811"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Day the order was placed. Relates to date[Date]. Never after AsOf.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "DeliveryDate",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   date",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Day the order was delivered. Blank when the delivery falls after AsOf (not delivered yet).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "CustomerKey",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  },
+                  {
+                    "value": "   → customer",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#F2C811"
+                    }
+                  },
+                  {
+                    "value": "   hidden",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Customer who placed the order. Relates to customer[CustomerKey].",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "StoreKey",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  },
+                  {
+                    "value": "   → store",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#F2C811"
+                    }
+                  },
+                  {
+                    "value": "   hidden",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Store that took the order; 999999 is the online store. Relates to store[StoreKey].",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "ProductKey",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  },
+                  {
+                    "value": "   → product",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#F2C811"
+                    }
+                  },
+                  {
+                    "value": "   hidden",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Product sold on the line. Relates to product[ProductKey].",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Quantity",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   whole number",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Units sold on the line.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "UnitPrice",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   fixed decimal",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "List price per unit, in USD.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "NetPrice",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   fixed decimal",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Price per unit actually charged after discount, in USD. Revenue = Quantity x NetPrice.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "UnitCost",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   fixed decimal",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Cost per unit, in USD. Margin = Quantity x (NetPrice - UnitCost).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "CurrencyCode",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   text",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "Customer's local currency (AUD, CAD, EUR, GBP, USD).",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "ExchangeRate",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI Semibold",
+                      "fontSize": "11pt",
+                      "color": "#E8ECF5"
+                    }
+                  },
+                  {
+                    "value": "   decimal",
+                    "textStyle": {
+                      "fontFamily": "Consolas",
+                      "fontSize": "9pt",
+                      "color": "#7F8BA8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": "USD to CurrencyCode rate on the order day. Multiply a USD amount by it to get local currency; 1 for USD.",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "10pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              },
+              {
+                "textRuns": [
+                  {
+                    "value": " ",
+                    "textStyle": {
+                      "fontFamily": "Segoe UI",
+                      "fontSize": "4pt",
+                      "color": "#A3AEC8"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "visualContainerObjects": {
+      "title": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "false"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "background": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#10204A'"
+                    }
+                  }
+                }
+              }
+            },
+            "transparency": {
+              "expr": {
+                "Literal": {
+                  "Value": "0D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "border": [
+        {
+          "properties": {
+            "show": {
+              "expr": {
+                "Literal": {
+                  "Value": "true"
+                }
+              }
+            },
+            "color": {
+              "solid": {
+                "color": {
+                  "expr": {
+                    "Literal": {
+                      "Value": "'#1B3466'"
+                    }
+                  }
+                }
+              }
+            },
+            "radius": {
+              "expr": {
+                "Literal": {
+                  "Value": "8D"
+                }
+              }
+            }
+          }
+        }
+      ],
+      "padding": [
+        {
+          "properties": {
+            "top": {
+              "expr": {
+                "Literal": {
+                  "Value": "22D"
+                }
+              }
+            },
+            "bottom": {
+              "expr": {
+                "Literal": {
+                  "Value": "22D"
+                }
+              }
+            },
+            "left": {
+              "expr": {
+                "Literal": {
+                  "Value": "22D"
+                }
+              }
+            },
+            "right": {
+              "expr": {
+                "Literal": {
+                  "Value": "22D"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "drillFilterOtherVisuals": true
+  }
+}

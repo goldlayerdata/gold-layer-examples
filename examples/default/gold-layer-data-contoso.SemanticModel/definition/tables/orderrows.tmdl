@@ -1,0 +1,74 @@
+/// Fact lines, child of orders. No date of its own: inner-joined to the AsOf-filtered orders on OrderKey.
+table orderrows
+	lineageTag: 5a704a1c-7e0a-4211-8842-bcf247aec46d
+
+	/// Order the line belongs to. Relates to orders[OrderKey].
+	column OrderKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: b3c5dba1-3c4e-4be8-9b07-d22653291095
+		summarizeBy: none
+		sourceColumn: OrderKey
+
+	/// Line number within the order, starting at 0.
+	column RowNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: df4044d3-babc-4673-83d9-4f46d51faf2f
+		summarizeBy: none
+		sourceColumn: RowNumber
+
+	/// Product sold on the line. Relates to product[ProductKey].
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7e094f60-22cd-4460-a11a-189335aa8795
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	/// Units sold on the line.
+	column Quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: 0396ac26-5a9c-4ef6-8aee-ec3333b68021
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	/// List price per unit, in USD.
+	column UnitPrice
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: ec0f58e2-9d85-4d2f-8ea3-bd4fe6a33175
+		summarizeBy: none
+		sourceColumn: UnitPrice
+
+	/// Price per unit actually charged after discount, in USD.
+	column NetPrice
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: cc2f44cc-fd02-4cf8-a83e-0ec8cf19869f
+		summarizeBy: none
+		sourceColumn: NetPrice
+
+	/// Cost per unit, in USD.
+	column UnitCost
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: 289ce217-3842-4760-b278-9a3d001ce51b
+		summarizeBy: none
+		sourceColumn: UnitCost
+
+	partition orderrows = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "orderrows.parquet")),
+				    KeepKeys = Table.RenameColumns(Table.SelectColumns(orders, {"OrderKey"}), {{"OrderKey", "KeepKey"}}),
+				    Joined = Table.Join(Source, "OrderKey", KeepKeys, "KeepKey", JoinKind.Inner),
+				    Trimmed = Table.RemoveColumns(Joined, {"KeepKey"}),
+				    Typed = Table.TransformColumnTypes(Trimmed, {{"OrderKey", Int64.Type}, {"RowNumber", Int64.Type}, {"ProductKey", Int64.Type}, {"Quantity", Int64.Type}, {"UnitPrice", Currency.Type}, {"NetPrice", Currency.Type}, {"UnitCost", Currency.Type}})
+				in
+				    Typed
+

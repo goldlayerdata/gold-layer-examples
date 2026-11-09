@@ -1,0 +1,117 @@
+/// Product dimension (SQLBI template data). Unchanged by AsOf.
+table product
+	lineageTag: 6d9d1e8f-9389-4b01-8eb7-e48c0b70cfe6
+
+	/// Product identifier.
+	column ProductKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 1af86f5b-1d36-49a3-8e57-a09bd0ba91ef
+		summarizeBy: none
+		sourceColumn: ProductKey
+
+	/// Product code: category (2 digits), subcategory (2), item (3).
+	column ProductCode
+		dataType: string
+		lineageTag: 1f5a718f-6873-4f39-9b9f-c6ede3f32086
+		summarizeBy: none
+		sourceColumn: ProductCode
+
+	/// Product name.
+	column ProductName
+		dataType: string
+		lineageTag: d777491f-9d4a-4444-83b6-0498dfed8d4b
+		summarizeBy: none
+		sourceColumn: ProductName
+
+	/// Company that makes the product.
+	column Manufacturer
+		dataType: string
+		lineageTag: 383a2cf1-b1a2-4a16-84e1-1ed081ed1e9c
+		summarizeBy: none
+		sourceColumn: Manufacturer
+
+	/// Brand the product is sold under.
+	column Brand
+		dataType: string
+		lineageTag: 706bc2e6-c832-4773-a6b0-54469f4eb0c1
+		summarizeBy: none
+		sourceColumn: Brand
+
+	/// Product colour.
+	column Color
+		dataType: string
+		lineageTag: db5b4e92-3602-46ea-b642-5bd638b30ecf
+		summarizeBy: none
+		sourceColumn: Color
+
+	/// Unit of Weight: grams, ounces or pounds; blank when there is no weight.
+	column WeightUnit
+		dataType: string
+		lineageTag: abf182f6-9c6a-4015-a794-adaf6dc47221
+		summarizeBy: none
+		sourceColumn: WeightUnit
+
+	/// Product weight, in WeightUnit.
+	column Weight
+		dataType: double
+		formatString: #,0.00
+		lineageTag: 6176e7b1-0a42-4d84-a880-ebd9db421e8a
+		summarizeBy: none
+		sourceColumn: Weight
+
+	/// Standard cost per unit, in USD.
+	column Cost
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: ad3ea2ef-0706-466e-9658-466f217f3c5a
+		summarizeBy: none
+		sourceColumn: Cost
+
+	/// Standard list price per unit, in USD.
+	column Price
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: fc5ff46e-f294-40c8-902d-f57b6d1ddbbb
+		summarizeBy: none
+		sourceColumn: Price
+
+	/// Category identifier.
+	column CategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 31b3d989-0657-4b50-8e1f-c62578f9bbd6
+		summarizeBy: none
+		sourceColumn: CategoryKey
+
+	/// Product category (Audio, Cameras and camcorders, Computers, ...).
+	column CategoryName
+		dataType: string
+		lineageTag: a67a7b67-2c5c-4001-9676-470fa4ee0e01
+		summarizeBy: none
+		sourceColumn: CategoryName
+
+	/// Subcategory identifier.
+	column SubCategoryKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 81ac75d3-c608-4bf3-85a0-77089cfd8ee8
+		summarizeBy: none
+		sourceColumn: SubCategoryKey
+
+	/// Product subcategory.
+	column SubCategoryName
+		dataType: string
+		lineageTag: 950ba735-1a20-4937-9080-b20519aad731
+		summarizeBy: none
+		sourceColumn: SubCategoryName
+
+	partition product = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "product.parquet")),
+				    Typed = Table.TransformColumnTypes(Source, {{"ProductKey", Int64.Type}, {"Weight", type number}, {"Cost", Currency.Type}, {"Price", Currency.Type}, {"CategoryKey", Int64.Type}, {"SubCategoryKey", Int64.Type}})
+				in
+				    Typed
+

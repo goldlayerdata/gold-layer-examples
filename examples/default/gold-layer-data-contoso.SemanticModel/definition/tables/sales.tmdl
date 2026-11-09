@@ -1,0 +1,144 @@
+/// Fact, one row per order line (flat star). Cut at AsOf: no order after it, and DeliveryDate is blank where the delivery is still to come.
+table sales
+	lineageTag: edda3b2c-d337-4e5a-aa43-dea110a7ce02
+
+	/// Order number. One order has one or more lines.
+	column OrderKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 1b482428-308c-4efa-b347-a4dfbac61e03
+		summarizeBy: count
+		sourceColumn: OrderKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Line number within the order, starting at 0.
+	column LineNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: 58a37b02-82ec-4537-9305-8ddb63ef055e
+		summarizeBy: sum
+		sourceColumn: LineNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Day the order was placed. Relates to date[Date]. Never after AsOf.
+	column OrderDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 22e1b6b9-eda7-451c-9371-e1f3e174dd55
+		summarizeBy: none
+		sourceColumn: OrderDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Day the order was delivered. Blank when the delivery falls after AsOf (not delivered yet).
+	column DeliveryDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 5c2e3964-fb2c-4aff-a652-c8cba18432df
+		summarizeBy: none
+		sourceColumn: DeliveryDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Customer who placed the order. Relates to customer[CustomerKey].
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 1b0136c3-b83e-4fd9-9f7c-870999303426
+		summarizeBy: count
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Store that took the order; 999999 is the online store. Relates to store[StoreKey].
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 8819a870-53be-4b48-becc-36a1e2caa468
+		summarizeBy: count
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Product sold on the line. Relates to product[ProductKey].
+	column ProductKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: c702e47f-bd61-4889-9b77-49e4b9d624a0
+		summarizeBy: count
+		sourceColumn: ProductKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Units sold on the line.
+	column Quantity
+		dataType: int64
+		formatString: #,0
+		lineageTag: cf1a3449-7157-41dd-87ec-2fdc84654c8e
+		summarizeBy: sum
+		sourceColumn: Quantity
+
+	/// List price per unit, in USD.
+	column UnitPrice
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: da119d51-2168-475d-8a2e-13231fcbbecf
+		summarizeBy: sum
+		sourceColumn: UnitPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Price per unit actually charged after discount, in USD. Revenue = Quantity x NetPrice.
+	column NetPrice
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: 0d547431-5f77-4edf-b045-0fbc4016f6dd
+		summarizeBy: sum
+		sourceColumn: NetPrice
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Cost per unit, in USD. Margin = Quantity x (NetPrice - UnitCost).
+	column UnitCost
+		dataType: decimal
+		formatString: #,0.00
+		lineageTag: b46a8da6-584f-465e-b980-42075f2d7adb
+		summarizeBy: sum
+		sourceColumn: UnitCost
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Customer's local currency (AUD, CAD, EUR, GBP, USD).
+	column CurrencyCode
+		dataType: string
+		lineageTag: 13bb916f-5ecd-495c-b909-ee4d2dda0989
+		summarizeBy: none
+		sourceColumn: CurrencyCode
+
+	/// USD to CurrencyCode rate on the order day. Multiply a USD amount by it to get local currency; 1 for USD.
+	column ExchangeRate
+		dataType: double
+		formatString: 0.00000
+		lineageTag: 3d5b984e-7d31-4b1c-a7ee-e7c41606d3f7
+		summarizeBy: sum
+		sourceColumn: ExchangeRate
+
+		annotation SummarizationSetBy = Automatic
+
+	partition sales = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "sales.parquet")),
+				    Dates = fnToDate(Source, {"OrderDate", "DeliveryDate"}),
+				    UpToAsOf = Table.SelectRows(Dates, each [OrderDate] <= AsOf),
+				    NotDeliveredYet = Table.ReplaceValue(UpToAsOf, each [DeliveryDate], each if [DeliveryDate] <> null and [DeliveryDate] > AsOf then null else [DeliveryDate], Replacer.ReplaceValue, {"DeliveryDate"}),
+				    Typed = Table.TransformColumnTypes(NotDeliveredYet, {{"OrderKey", Int64.Type}, {"LineNumber", Int64.Type}, {"OrderDate", type date}, {"DeliveryDate", type date}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"ProductKey", Int64.Type}, {"Quantity", Int64.Type}, {"UnitPrice", Currency.Type}, {"NetPrice", Currency.Type}, {"UnitCost", Currency.Type}, {"CurrencyCode", type text}, {"ExchangeRate", type number}})
+				in
+				    Typed
+

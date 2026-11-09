@@ -1,0 +1,181 @@
+/// Calendar, whole years up to the end of AsOf's year (time intelligence needs full years). DateWithSales is TRUE up to AsOf.
+table date
+	lineageTag: c089069b-d296-4b59-9ef4-451f1ae01142
+	dataCategory: Time
+
+	/// One row per day, whole years up to 31 December of the AsOf year. Key of the date table.
+	column Date
+		dataType: dateTime
+		isUnique
+		isKey
+		formatString: yyyy-mm-dd
+		lineageTag: 088b645f-2c36-4235-8b46-49e4061b87c4
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Date as text yyyymmdd.
+	column DateKey
+		dataType: string
+		isHidden
+		lineageTag: 07603fa3-9dcd-44a3-886d-bac0b00ae7fd
+		summarizeBy: none
+		sourceColumn: DateKey
+
+	/// Calendar year.
+	column Year
+		dataType: int64
+		formatString: 0
+		lineageTag: e214f70d-a66a-46bf-8726-bc5630af3f3f
+		summarizeBy: sum
+		sourceColumn: Year
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Quarter with year, e.g. Q4-2026.
+	column YearQuarter
+		dataType: string
+		lineageTag: ebd8bc92-37d7-48a2-964d-3d455390a663
+		summarizeBy: none
+		sourceColumn: YearQuarter
+		sortByColumn: YearQuarterNumber
+
+	/// Sequential quarter number (Year x 4 + quarter); sort key for YearQuarter.
+	column YearQuarterNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 64f02241-7f57-4b3f-8dc2-79d8b8640aee
+		summarizeBy: sum
+		sourceColumn: YearQuarterNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Quarter without year, Q1-Q4.
+	column Quarter
+		dataType: string
+		lineageTag: b1d51a36-6087-42a0-b6e1-263d575ed3ba
+		summarizeBy: none
+		sourceColumn: Quarter
+
+	/// Month with year, e.g. November 2026.
+	column YearMonth
+		dataType: string
+		lineageTag: e8d55156-1bcb-4d2d-9f47-2f498526ca26
+		summarizeBy: none
+		sourceColumn: YearMonth
+		sortByColumn: YearMonthNumber
+
+	/// Short month with year, e.g. Nov 2026.
+	column YearMonthShort
+		dataType: string
+		lineageTag: b17fce72-6bd4-4a3c-93a1-538ce8e758a0
+		summarizeBy: none
+		sourceColumn: YearMonthShort
+		sortByColumn: YearMonthNumber
+
+	/// Sequential month number (Year x 12 + month); sort key for the YearMonth columns.
+	column YearMonthNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: d4dc6cec-7b63-46df-ba5b-12ebfeb3aed1
+		summarizeBy: sum
+		sourceColumn: YearMonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Month name, January-December.
+	column Month
+		dataType: string
+		lineageTag: 7e84e182-b464-4527-8c3f-a9afa629fbc3
+		summarizeBy: none
+		sourceColumn: Month
+		sortByColumn: MonthNumber
+
+	/// Short month name, Jan-Dec.
+	column MonthShort
+		dataType: string
+		lineageTag: 7ecdc5d8-32c7-42a9-96a6-792f18973310
+		summarizeBy: none
+		sourceColumn: MonthShort
+		sortByColumn: MonthNumber
+
+	/// Month number 1-12; sort key for Month and MonthShort.
+	column MonthNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 6589e644-8b93-4277-b304-b5f798cde8da
+		summarizeBy: sum
+		sourceColumn: MonthNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Day name, Sunday-Saturday.
+	column DayofWeek
+		dataType: string
+		lineageTag: 9aa04634-7049-4382-a55d-ece85ff5b94e
+		summarizeBy: none
+		sourceColumn: DayofWeek
+		sortByColumn: DayofWeekNumber
+
+	/// Short day name, Sun-Sat.
+	column DayofWeekShort
+		dataType: string
+		lineageTag: 12cb60e6-d0df-4a1a-9034-f729319550f1
+		summarizeBy: none
+		sourceColumn: DayofWeekShort
+		sortByColumn: DayofWeekNumber
+
+	/// Day of week number; sort key for the DayofWeek columns.
+	column DayofWeekNumber
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 5e7ebb98-27e9-4c6d-a3bd-c9984fc299f0
+		summarizeBy: sum
+		sourceColumn: DayofWeekNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// 1 on a working day, 0 on weekends and holidays.
+	column WorkingDay
+		dataType: int64
+		formatString: 0
+		lineageTag: c93d6f22-00b9-4cc0-ba7f-4c3d20609bcc
+		summarizeBy: sum
+		sourceColumn: WorkingDay
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Running count of working days since the first date; difference of two gives working days between them.
+	column WorkingDayNumber
+		dataType: int64
+		formatString: 0
+		lineageTag: d8f60427-c111-4cbe-b6e1-2c34b8b8626b
+		summarizeBy: sum
+		sourceColumn: WorkingDayNumber
+
+		annotation SummarizationSetBy = Automatic
+
+	/// TRUE up to AsOf, FALSE after. Filter time intelligence on it so the current year does not compare a partial year with a full one.
+	column DateWithSales
+		dataType: boolean
+		lineageTag: 772a765b-6c64-497e-8cc6-c715683f4536
+		summarizeBy: none
+		sourceColumn: DateWithSales
+
+	partition date = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "date.parquet")),
+				    Dates = fnToDate(Source, {"Date"}),
+				    WholeYears = Table.SelectRows(Dates, each [Date] <= Date.EndOfYear(AsOf)),
+				    Flagged = Table.AddColumn(WholeYears, "DateWithSales", each [Date] <= AsOf, type logical),
+				    Typed = Table.TransformColumnTypes(Flagged, {{"Year", Int64.Type}, {"YearQuarterNumber", Int64.Type}, {"YearMonthNumber", Int64.Type}, {"MonthNumber", Int64.Type}, {"DayofWeekNumber", Int64.Type}, {"WorkingDay", Int64.Type}, {"WorkingDayNumber", Int64.Type}})
+				in
+				    Typed
+

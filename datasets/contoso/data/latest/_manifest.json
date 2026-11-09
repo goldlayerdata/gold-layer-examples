@@ -9,42 +9,42 @@
   },
   "params": {
     "OutputFormat": "PARQUET",
-    "OrdersCount": 1000000,
-    "CustomerPercentage": 0.05,
-    "StartDT": "2018-01-01",
-    "YearsCount": 10,
-    "CutDateBefore": "2018-01-01",
+    "OrdersCount": 100000,
+    "CustomerPercentage": 0.005,
+    "StartDT": "2023-01-01",
+    "YearsCount": 5,
+    "CutDateBefore": "2023-01-01",
     "CutDateAfter": "2027-12-31"
   },
   "date_range": {
-    "first_order": "2018-01-01",
+    "first_order": "2023-01-01",
     "last_order": "2027-12-31"
   },
   "counts": {
-    "orders": 991155,
-    "online_orders": 396419,
-    "order_rows": 2376336
+    "orders": 93136,
+    "online_orders": 37153,
+    "order_rows": 223136
   },
   "files": [
     {
       "file": "currencyexchange.parquet",
-      "bytes": 387890
+      "bytes": 209140
     },
     {
       "file": "customer.parquet",
-      "bytes": 7936286
+      "bytes": 1015574
     },
     {
       "file": "date.parquet",
-      "bytes": 46529
+      "bytes": 27376
     },
     {
       "file": "orderrows.parquet",
-      "bytes": 29231290
+      "bytes": 2782959
     },
     {
       "file": "orders.parquet",
-      "bytes": 7360053
+      "bytes": 727629
     },
     {
       "file": "product.parquet",
@@ -52,7 +52,7 @@
     },
     {
       "file": "sales.parquet",
-      "bytes": 44541626
+      "bytes": 4248907
     },
     {
       "file": "store.parquet",

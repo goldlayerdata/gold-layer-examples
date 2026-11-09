@@ -1,0 +1,49 @@
+/// Daily exchange rates, kept up to AsOf. Unrelated table, read by conversion measures.
+table currencyexchange
+	lineageTag: ae9db116-df15-4ad2-94d0-1a74de1cd999
+
+	/// Day the rate applies to. Not related to date; conversion measures look it up. Rates after the cached ECB data are mirrored forward, so treat recent ones as made up.
+	column Date
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: aa2515ba-5fa0-4143-b862-b5ea14f9e39f
+		summarizeBy: none
+		sourceColumn: Date
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Currency converted from (AUD, CAD, EUR, GBP, USD).
+	column FromCurrency
+		dataType: string
+		lineageTag: 1ca69c30-07e8-4409-bf3e-cbbe03685732
+		summarizeBy: none
+		sourceColumn: FromCurrency
+
+	/// Currency converted to.
+	column ToCurrency
+		dataType: string
+		lineageTag: 147c432e-35a2-42d6-adfc-15f4ba0402ac
+		summarizeBy: none
+		sourceColumn: ToCurrency
+
+	/// Units of ToCurrency for one unit of FromCurrency on Date.
+	column Exchange
+		dataType: double
+		formatString: 0.00000
+		lineageTag: e32be371-e23a-40a7-b86b-d513a254dd64
+		summarizeBy: sum
+		sourceColumn: Exchange
+
+		annotation SummarizationSetBy = Automatic
+
+	partition currencyexchange = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "currencyexchange.parquet")),
+				    Dates = fnToDate(Source, {"Date"}),
+				    UpToAsOf = Table.SelectRows(Dates, each [Date] <= AsOf),
+				    Typed = Table.TransformColumnTypes(UpToAsOf, {{"Date", type date}, {"FromCurrency", type text}, {"ToCurrency", type text}, {"Exchange", type number}})
+				in
+				    Typed
+

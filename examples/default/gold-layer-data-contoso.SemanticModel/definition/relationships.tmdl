@@ -1,0 +1,36 @@
+relationship sales_CustomerKey_customer_CustomerKey
+	fromColumn: sales.CustomerKey
+	toColumn: customer.CustomerKey
+
+relationship sales_ProductKey_product_ProductKey
+	fromColumn: sales.ProductKey
+	toColumn: product.ProductKey
+
+relationship sales_StoreKey_store_StoreKey
+	fromColumn: sales.StoreKey
+	toColumn: store.StoreKey
+
+relationship sales_OrderDate_date_Date
+	fromColumn: sales.OrderDate
+	toColumn: date.Date
+
+relationship orders_CustomerKey_customer_CustomerKey
+	fromColumn: orders.CustomerKey
+	toColumn: customer.CustomerKey
+
+relationship orders_StoreKey_store_StoreKey
+	fromColumn: orders.StoreKey
+	toColumn: store.StoreKey
+
+relationship orders_DT_date_Date
+	fromColumn: orders.DT
+	toColumn: date.Date
+
+relationship orderrows_OrderKey_orders_OrderKey
+	fromColumn: orderrows.OrderKey
+	toColumn: orders.OrderKey
+
+relationship orderrows_ProductKey_product_ProductKey
+	fromColumn: orderrows.ProductKey
+	toColumn: product.ProductKey
+

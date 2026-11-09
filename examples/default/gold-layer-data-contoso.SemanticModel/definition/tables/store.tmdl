@@ -1,0 +1,111 @@
+/// Store dimension (SQLBI template data; open/close dates stop in 2019). Unchanged by AsOf.
+table store
+	lineageTag: eff02ebb-1628-4c89-bebc-082ef4892b00
+
+	/// Store identifier; 999999 is the online store.
+	column StoreKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c5050d55-7de8-4342-8d20-de72aec2834a
+		summarizeBy: count
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Store number.
+	column StoreCode
+		dataType: int64
+		formatString: 0
+		lineageTag: a0598265-d250-4184-a4b6-7e3a5d71fbde
+		summarizeBy: count
+		sourceColumn: StoreCode
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Geographic area of the store (generator's internal area code).
+	column GeoAreaKey
+		dataType: int64
+		formatString: 0
+		lineageTag: d4701288-b41c-40e6-8d72-2b5b8d227422
+		summarizeBy: count
+		sourceColumn: GeoAreaKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Country code of the store.
+	column CountryCode
+		dataType: string
+		lineageTag: ebe3c53c-c27e-4ca8-a16b-cfe302394d68
+		summarizeBy: none
+		sourceColumn: CountryCode
+
+	/// Country of the store; 'Online' for the online store.
+	column CountryName
+		dataType: string
+		lineageTag: 1234981c-9fdc-4eba-885d-3443fabd4cc7
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: CountryName
+
+	/// State or region of the store.
+	column State
+		dataType: string
+		lineageTag: 633b8f24-e23f-4a00-abd7-5c10a550f258
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: State
+
+	/// Day the store opened (template data, 2005-2019).
+	column OpenDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: df1a4e1d-c03c-4ed4-827a-7149874bbcbd
+		summarizeBy: none
+		sourceColumn: OpenDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Day the store closed; blank while it is open. Template data, stops in 2019.
+	column CloseDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 1c10600f-465e-4f81-95d1-ec03dc8acc7c
+		summarizeBy: none
+		sourceColumn: CloseDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Store name, e.g. 'Contoso Store South Australia'.
+	column Description
+		dataType: string
+		lineageTag: 585553d9-dd7b-4688-9b0e-9db6c20900db
+		summarizeBy: none
+		sourceColumn: Description
+
+	/// Selling area in square metres.
+	column SquareMeters
+		dataType: int64
+		formatString: #,0
+		lineageTag: cc665abc-37a8-4e03-a01f-fb7d97cb401f
+		summarizeBy: sum
+		sourceColumn: SquareMeters
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Blank for an open store, otherwise Closed or Restructured.
+	column Status
+		dataType: string
+		lineageTag: bd70efca-4848-4c0e-9d1d-c9a3fe417f36
+		summarizeBy: none
+		sourceColumn: Status
+
+	partition store = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "store.parquet")),
+				    Dates = fnToDate(Source, {"OpenDate", "CloseDate"}),
+				    Typed = Table.TransformColumnTypes(Dates, {{"StoreKey", Int64.Type}, {"StoreCode", Int64.Type}, {"GeoAreaKey", Int64.Type}, {"SquareMeters", Int64.Type}})
+				in
+				    Typed
+

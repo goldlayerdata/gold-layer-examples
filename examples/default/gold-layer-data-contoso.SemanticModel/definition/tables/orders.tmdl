@@ -1,0 +1,77 @@
+/// Fact header, one row per order (use with orderrows instead of sales). Cut at AsOf on DT; DeliveryDate blank where still to come.
+table orders
+	lineageTag: 2dc41384-919e-4e18-92e5-34db1f81c2fa
+
+	/// Order number. Relates to orderrows[OrderKey].
+	column OrderKey
+		dataType: int64
+		formatString: 0
+		lineageTag: 0374e6ec-6680-44ea-b649-1bc4c0e0cd2e
+		summarizeBy: count
+		sourceColumn: OrderKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Customer who placed the order. Relates to customer[CustomerKey].
+	column CustomerKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 73ebbf0d-b0a6-43c8-bc8f-b19a9205cf13
+		summarizeBy: count
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Store that took the order; 999999 is the online store. Relates to store[StoreKey].
+	column StoreKey
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 0f155c29-3302-41e6-ae26-4e593d170e5a
+		summarizeBy: count
+		sourceColumn: StoreKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Order date (the generator's name for it). Relates to date[Date]. Never after AsOf.
+	column DT
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: cd442416-d145-4662-9db6-ad413629c374
+		summarizeBy: none
+		sourceColumn: DT
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Day the order was delivered. Blank when the delivery falls after AsOf (not delivered yet).
+	column DeliveryDate
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 427857f3-a1c9-41d6-aa74-3c422a1b0044
+		summarizeBy: none
+		sourceColumn: DeliveryDate
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Customer's local currency (AUD, CAD, EUR, GBP, USD).
+	column CurrencyCode
+		dataType: string
+		lineageTag: cfe99716-ddc9-4812-9ec0-20905af7395a
+		summarizeBy: none
+		sourceColumn: CurrencyCode
+
+	partition orders = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "orders.parquet")),
+				    Dates = fnToDate(Source, {"DT", "DeliveryDate"}),
+				    UpToAsOf = Table.SelectRows(Dates, each [DT] <= AsOf),
+				    NotDeliveredYet = Table.ReplaceValue(UpToAsOf, each [DeliveryDate], each if [DeliveryDate] <> null and [DeliveryDate] > AsOf then null else [DeliveryDate], Replacer.ReplaceValue, {"DeliveryDate"}),
+				    Typed = Table.TransformColumnTypes(NotDeliveredYet, {{"OrderKey", Int64.Type}, {"CustomerKey", Int64.Type}, {"StoreKey", Int64.Type}, {"DT", type date}, {"DeliveryDate", type date}, {"CurrencyCode", type text}})
+				in
+				    Typed
+
+	annotation PBI_ResultType = Exception
+

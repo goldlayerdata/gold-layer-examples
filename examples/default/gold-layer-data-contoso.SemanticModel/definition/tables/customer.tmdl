@@ -1,0 +1,212 @@
+/// Customer dimension (synthetic people). Unchanged by AsOf.
+table customer
+	lineageTag: a716177a-c808-431c-9168-3d452c3316de
+
+	/// Customer identifier.
+	column CustomerKey
+		dataType: int64
+		formatString: 0
+		lineageTag: e3202a3b-8f6a-4254-a3c8-e02c91479c4d
+		summarizeBy: count
+		sourceColumn: CustomerKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Geographic area the customer lives in (generator's internal area code).
+	column GeoAreaKey
+		dataType: int64
+		formatString: 0
+		lineageTag: c2a9ce74-3b1b-402a-933a-5ed419143070
+		summarizeBy: count
+		sourceColumn: GeoAreaKey
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Start of the customer record's validity window (generator data, 1980-2010).
+	column StartDT
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: dcecb3ff-9cea-4b06-a346-8b1637741e5e
+		summarizeBy: none
+		sourceColumn: StartDT
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// End of the customer record's validity window (generator data, up to 2045).
+	column EndDT
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 85d6f786-5353-4c33-9b66-0cb529c92e66
+		summarizeBy: none
+		sourceColumn: EndDT
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Continent of the customer's address.
+	column Continent
+		dataType: string
+		lineageTag: 1dc4b62c-b2a3-4297-8a4f-d232d5080709
+		summarizeBy: none
+		sourceColumn: Continent
+
+	/// Customer gender as generated.
+	column Gender
+		dataType: string
+		lineageTag: c8bfb8ab-e09d-46ba-b690-52d2e082dc7e
+		summarizeBy: none
+		sourceColumn: Gender
+
+	/// Courtesy title (Mr., Ms., ...).
+	column Title
+		dataType: string
+		lineageTag: 2d46c0e9-0a76-46f6-adbc-7f4abddce471
+		summarizeBy: none
+		sourceColumn: Title
+
+	/// First name. Synthetic, not a real person.
+	column GivenName
+		dataType: string
+		lineageTag: 3ea37395-0319-45a4-a831-fcf74fc56d35
+		summarizeBy: none
+		sourceColumn: GivenName
+
+	/// Middle initial.
+	column MiddleInitial
+		dataType: string
+		lineageTag: 0067244e-2c42-4623-98d0-f09420f92558
+		summarizeBy: none
+		sourceColumn: MiddleInitial
+
+	/// Last name. Synthetic, not a real person.
+	column Surname
+		dataType: string
+		lineageTag: 1c4b7a04-542c-4f63-ad9a-0e6407ff17b5
+		summarizeBy: none
+		sourceColumn: Surname
+
+	/// Street and number. Synthetic.
+	column StreetAddress
+		dataType: string
+		lineageTag: 2e7783d3-933f-4985-9520-78d7c592ecb9
+		summarizeBy: none
+		sourceColumn: StreetAddress
+
+	/// City.
+	column City
+		dataType: string
+		lineageTag: 1bd5254b-a9f0-447c-b73c-b5d655b3b993
+		dataCategory: City
+		summarizeBy: none
+		sourceColumn: City
+
+	/// State or region code.
+	column State
+		dataType: string
+		lineageTag: da98b6a1-9c29-4130-91dc-85381c87f6ca
+		summarizeBy: none
+		sourceColumn: State
+
+	/// State or region name.
+	column StateFull
+		dataType: string
+		lineageTag: baa13888-3eb3-476b-8232-ca82a21a35a6
+		dataCategory: StateOrProvince
+		summarizeBy: none
+		sourceColumn: StateFull
+
+	/// Postal code.
+	column ZipCode
+		dataType: string
+		lineageTag: 1945b005-2a37-4bbb-a9ec-509813346dd1
+		dataCategory: PostalCode
+		summarizeBy: none
+		sourceColumn: ZipCode
+
+	/// Country code: AU, CA, DE, FR, GB, IT, NL, US.
+	column Country
+		dataType: string
+		lineageTag: 7f9ca475-a082-4b80-a990-3de53f5f77b0
+		summarizeBy: none
+		sourceColumn: Country
+
+	/// Country name.
+	column CountryFull
+		dataType: string
+		lineageTag: 1a1acb7f-04ef-490a-9ee7-5885fb25380f
+		dataCategory: Country
+		summarizeBy: none
+		sourceColumn: CountryFull
+
+	/// Date of birth.
+	column Birthday
+		dataType: dateTime
+		formatString: yyyy-mm-dd
+		lineageTag: 2328a846-85db-496b-af7d-6796a262c5d9
+		summarizeBy: none
+		sourceColumn: Birthday
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	/// Age in years when the data was generated (19-85). Fixed, does not move with AsOf.
+	column Age
+		dataType: int64
+		formatString: 0
+		lineageTag: 26029267-20b4-400f-889c-b2bcf1446152
+		summarizeBy: sum
+		sourceColumn: Age
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Job title.
+	column Occupation
+		dataType: string
+		lineageTag: 6f354e39-1cb7-436d-8aeb-e71bbd74747c
+		summarizeBy: none
+		sourceColumn: Occupation
+
+	/// Employer.
+	column Company
+		dataType: string
+		lineageTag: a6df5a00-f95a-4c6c-a99f-2827c2384849
+		summarizeBy: none
+		sourceColumn: Company
+
+	/// Car the customer drives (make, model, year).
+	column Vehicle
+		dataType: string
+		lineageTag: cfd622fd-2ad2-4be1-8ee5-057ab4b11672
+		summarizeBy: none
+		sourceColumn: Vehicle
+
+	/// Latitude of the address, for maps.
+	column Latitude
+		dataType: double
+		formatString: 0.00000
+		lineageTag: 53218df6-513d-4b36-bb94-e96eb8f49eb5
+		dataCategory: Latitude
+		summarizeBy: sum
+		sourceColumn: Latitude
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Longitude of the address, for maps.
+	column Longitude
+		dataType: double
+		formatString: 0.00000
+		lineageTag: 32f8f6db-22aa-42d6-a6cf-ee7b271ea184
+		dataCategory: Longitude
+		summarizeBy: sum
+		sourceColumn: Longitude
+
+		annotation SummarizationSetBy = Automatic
+
+	partition customer = m
+		mode: import
+		source =
+				let
+				    Source = Parquet.Document(File.Contents(DataFolder & "customer.parquet")),
+				    Dates = fnToDate(Source, {"StartDT", "EndDT", "Birthday"}),
+				    Typed = Table.TransformColumnTypes(Dates, {{"CustomerKey", Int64.Type}, {"GeoAreaKey", Int64.Type}, {"Age", Int64.Type}, {"Latitude", type number}, {"Longitude", type number}})
+				in
+				    Typed
+
