@@ -1,0 +1,62 @@
+{
+  "job": "contoso",
+  "generated_on": "2026-11-09",
+  "engine": {
+    "name": "SQLBI Contoso Data Generator V2",
+    "version": "2.0.1.0",
+    "source": "https://github.com/sql-bi/Contoso-Data-Generator-V2",
+    "seed": "engine-internal fixed seeds: same inputs = same orders and rows; a few attributes (online flag) vary slightly run to run"
+  },
+  "params": {
+    "OutputFormat": "PARQUET",
+    "OrdersCount": 1000000,
+    "CustomerPercentage": 0.05,
+    "StartDT": "2018-01-01",
+    "YearsCount": 10,
+    "CutDateBefore": "2018-01-01",
+    "CutDateAfter": "2027-12-31"
+  },
+  "date_range": {
+    "first_order": "2018-01-01",
+    "last_order": "2027-12-31"
+  },
+  "counts": {
+    "orders": 991155,
+    "online_orders": 396419,
+    "order_rows": 2376336
+  },
+  "files": [
+    {
+      "file": "currencyexchange.parquet",
+      "bytes": 387890
+    },
+    {
+      "file": "customer.parquet",
+      "bytes": 7936286
+    },
+    {
+      "file": "date.parquet",
+      "bytes": 46529
+    },
+    {
+      "file": "orderrows.parquet",
+      "bytes": 29231290
+    },
+    {
+      "file": "orders.parquet",
+      "bytes": 7360053
+    },
+    {
+      "file": "product.parquet",
+      "bytes": 53544
+    },
+    {
+      "file": "sales.parquet",
+      "bytes": 44541626
+    },
+    {
+      "file": "store.parquet",
+      "bytes": 4834
+    }
+  ]
+}

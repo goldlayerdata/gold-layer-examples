@@ -1,0 +1,5 @@
+engine-internal (not configurable)
+
+The SQLBI generator seeds its own RNGs: Random(0) for setup and Random(year*1000 + dayOfYear)
+per simulated day. Same config.json + generate.ps1 params + data.xlsx = same orders and order rows.
+A few attributes (e.g. the online flag) vary slightly between runs.

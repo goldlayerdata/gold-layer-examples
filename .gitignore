@@ -1,0 +1,21 @@
+# Local generator binaries + download caches (hundreds of MB) - see each dataset's README
+.engine/
+
+# Generated data: rebuild with datasets/<name>/generate/. Only the manifest is tracked.
+datasets/*/data/latest/*
+!datasets/*/data/latest/_manifest.json
+datasets/*/data/runs/
+datasets/*/data/_staging/
+
+# Power BI Desktop local state (PBIP is the source of truth)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+*.pbix
+
+# Editor / OS / tooling
+.vscode/
+.DS_Store
+Thumbs.db
+~$*
+*.log
+__pycache__/
