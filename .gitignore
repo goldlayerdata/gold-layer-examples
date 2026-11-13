@@ -7,10 +7,17 @@ datasets/*/data/latest/*
 datasets/*/data/runs/
 datasets/*/data/_staging/
 
-# Power BI Desktop local state (PBIP is the source of truth)
+# Power BI Desktop local state
 **/.pbi/localSettings.json
 **/.pbi/cache.abf
+
+# Examples ship as one PBIX each (decided 2026-11-13). The PBIP working copy stays local.
+# examples/default/ was committed as PBIP before this; tracked files are unaffected.
+examples/*/*.pbip
+examples/*/*.Report/
+examples/*/*.SemanticModel/
 *.pbix
+!examples/*/*.pbix
 
 # Editor / OS / tooling
 .vscode/

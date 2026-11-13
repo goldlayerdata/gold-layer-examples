@@ -1,0 +1,97 @@
+// Pareto in Power BI, Gold Layer example (Contoso sample data).
+// Article: https://goldlayerdata.com/post.html?slug=pareto-in-power-bi-dax-vs-visual-calculations
+
+// ============ Model: table and DAX measures (table sales, display folder Pareto) ============
+
+// Calculated table, no relationships: the slicer values on the cutoff page (the measure of the same name draws the 80% line).
+TABLE Pareto Cutoff =
+SELECTCOLUMNS ( { 0.5, 0.6, 0.7, 0.8, 0.9, 0.95 }, "Threshold", [Value] )
+
+// Revenue in USD: quantity x net price (after discount).
+Revenue =
+    SUMX ( sales, sales[Quantity] * sales[NetPrice] )
+
+// Share of the revenue across the categories in view (slicers respected).
+Revenue Share % =
+    DIVIDE ( [Revenue], CALCULATE ( [Revenue], ALLSELECTED ( 'product'[CategoryName] ) ) )
+
+// Pareto running total the model way: every category whose revenue is at least this one's, over the total. Tied to product[CategoryName]; a visual calculation does the same for any axis.
+Revenue Cumulative % =
+VAR _cur = [Revenue]
+VAR _grand = CALCULATE ( [Revenue], ALLSELECTED ( 'product'[CategoryName] ) )
+VAR _cum =
+    CALCULATE (
+        [Revenue],
+        FILTER (
+            ALLSELECTED ( 'product'[CategoryName] ),
+            CALCULATE ( [Revenue] ) >= _cur
+        )
+    )
+RETURN
+    IF ( NOT ISBLANK ( _cur ), DIVIDE ( _cum, _grand ) )
+
+// The line up to and including the bar that crosses 80% (the vital few).
+Cumulative Vital =
+VAR _prev = [Revenue Cumulative %] - [Revenue Share %]
+RETURN
+    IF ( _prev < 0.8, [Revenue Cumulative %] )
+
+// The line past 80% (the rest).
+Cumulative Rest =
+    IF ( [Revenue Cumulative %] > 0.8, [Revenue Cumulative %] )
+
+// Gold for the vital few (up to the bar that crosses 80%), muted blue for the rest. Bound to the bars' fill.
+Pareto Bar Color =
+    IF ( [Revenue Cumulative %] - [Revenue Share %] < 0.8, "#F2C811", "#4A5C8C" )
+
+// How many categories it takes to reach 80% of revenue, counting the one that crosses it. A number a visual calculation cannot give a card.
+# Categories to 80% =
+COUNTROWS (
+    FILTER (
+        VALUES ( 'product'[CategoryName] ),
+        NOT ISBLANK ( [Revenue] ) && [Revenue Cumulative %] - [Revenue Share %] < 0.8
+    )
+)
+
+// The 80% line, drawn only where there is revenue so it spans the same categories as the bars.
+Pareto Cutoff =
+    IF ( NOT ISBLANK ( [Revenue] ), 0.8 )
+
+// The cutoff picked in the Pareto Cutoff slicer; 80% when nothing is selected (dynamic threshold, pareto-chart skill).
+Selected Threshold =
+    SELECTEDVALUE ( 'Pareto Cutoff'[Threshold], 0.8 )
+
+// How many categories it takes to reach the cutoff picked in the slicer, counting the one that crosses it.
+# Categories to Cutoff =
+VAR _cut = [Selected Threshold]
+RETURN
+    COUNTROWS (
+        FILTER (
+            VALUES ( 'product'[CategoryName] ),
+            NOT ISBLANK ( [Revenue] ) && [Revenue Cumulative %] - [Revenue Share %] < _cut
+        )
+    )
+
+// One-line readout for the cutoff page, e.g. 'It takes 4 of 8 categories to reach 80% of revenue'.
+Cutoff Headline =
+VAR _n = [# Categories to Cutoff]
+VAR _all = COUNTROWS ( FILTER ( VALUES ( 'product'[CategoryName] ), NOT ISBLANK ( [Revenue] ) ) )
+RETURN
+    "It takes " & _n & " of " & _all & " categories to reach " & FORMAT ( [Selected Threshold], "0%" ) & " of revenue"
+
+// ============ Visual calculations (page Pareto, left chart; nothing in the model) ============
+// Bar Color / [Selected Threshold] variants are on the cutoff page; the article has the step-by-step build.
+
+Percent of grand total = DIVIDE([Revenue], COLLAPSEALL([Revenue], ROWS))
+
+Pareto = RUNNINGSUM([Percent of grand total])   // hidden: the plain RUNNINGSUM, kept to show the trap
+
+Cumulative % = RUNNINGSUM([Percent of grand total], ORDERBY([Revenue], DESC))
+
+Before crossing = [Cumulative %] - [Percent of grand total]
+
+GreenLine = IF([Cumulative %] - [Percent of grand total] < 0.8, [Cumulative %])
+
+RedLine = IF([Cumulative %] > 0.8, [Cumulative %])
+
+Cutoff = 0.8

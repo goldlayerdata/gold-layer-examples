@@ -4,7 +4,8 @@ Worked Power BI and Fabric examples from [Gold Layer](https://goldlayerdata.com/
 open datasets so you can rebuild every one of them yourself.
 
 Each post or short on the site that shows a technique on real-looking data points to an
-`examples/<topic>/` folder here, with the report page, the DAX and the screenshots.
+`examples/<topic>/` folder here: a PBIX with its data inside, the DAX and the screenshots.
+See [examples/](examples/) for the list.
 
 ## Datasets
 
@@ -23,7 +24,7 @@ datasets/<name>/
 ├── generate/        the recipe: script + settings (tracked)
 ├── data/latest/     generated files (git-ignored) + _manifest.json (tracked)
 └── model/           the shared semantic model every example uses
-examples/<topic>/    one folder per post: report page, DAX, screenshots
+examples/<topic>/    one folder per post: PBIX (data inside), DAX, screenshots
 .engine/             local generator binaries and caches (git-ignored)
 ```
 
