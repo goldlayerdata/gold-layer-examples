@@ -6,6 +6,7 @@ single PBIX with its data inside: download it and open it in Power BI Desktop, n
 | Example | What it shows | Post |
 |---|---|---|
 | [default](default/) | The shared Contoso model every example starts from: tables, relationships, data dictionary | |
+| [default_measures](default_measures/) | The same model plus ready-made measures in one `_Measures` table: revenue, cost, margin, counts, averages, delivery, time intelligence | [Upskilling for 2027](https://goldlayerdata.com/post.html?slug=dax-and-modeling-are-not-enough) |
 | [pareto](pareto/) | A Pareto chart two ways (visual calculations and DAX), shaded zones, a cutoff slicer, the `RUNNINGSUM` trap | [Pareto in Power BI](https://goldlayerdata.com/post.html?slug=pareto-in-power-bi-dax-vs-visual-calculations) |
 
 ```text
