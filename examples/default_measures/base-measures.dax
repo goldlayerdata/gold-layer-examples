@@ -1,0 +1,154 @@
+// Base measures, Gold Layer example (Contoso sample data).
+// All in the measure table _Measures (calculated table ROW ( "Column", BLANK () ), column hidden;
+// "Measures" itself is a reserved name). They read table sales (one row per order line).
+// Amounts in USD unless the name says otherwise.
+
+// ============ Model: the measure table ============
+TABLE _Measures =
+ROW ( "Column", BLANK () )
+
+// ============ Sales ============
+
+// Net revenue in USD: quantity x net price (the price actually charged, after discount).
+Revenue =
+    SUMX ( sales, sales[Quantity] * sales[NetPrice] )
+
+// What the lines would have brought in at list price. Revenue before discount.
+Revenue at List Price =
+    SUMX ( sales, sales[Quantity] * sales[UnitPrice] )
+
+// Money given away as discount: list price minus net price, times quantity.
+Discount =
+    SUMX ( sales, sales[Quantity] * ( sales[UnitPrice] - sales[NetPrice] ) )
+
+// Discount as a share of revenue at list price.
+Discount % =
+    DIVIDE ( [Discount], [Revenue at List Price] )
+
+// Units sold across the order lines in view.
+Units Sold =
+    SUM ( sales[Quantity] )
+
+// Revenue per unit sold. Weighted by quantity, unlike an average of the NetPrice column.
+Average Net Price =
+    DIVIDE ( [Revenue], [Units Sold] )
+
+// Revenue in the customer's own currency at the order day's rate. Blank unless one CurrencyCode is in view.
+Revenue (Local Currency) =
+IF (
+    HASONEVALUE ( sales[CurrencyCode] ),
+    SUMX ( sales, sales[Quantity] * sales[NetPrice] * sales[ExchangeRate] )
+)
+
+// ============ Profit ============
+
+// Cost of the units sold: quantity x unit cost on the order line.
+Cost =
+    SUMX ( sales, sales[Quantity] * sales[UnitCost] )
+
+// Gross margin: revenue minus cost of the units sold.
+Margin =
+    SUMX ( sales, sales[Quantity] * ( sales[NetPrice] - sales[UnitCost] ) )
+
+// Gross margin as a share of revenue.
+Margin % =
+    DIVIDE ( [Margin], [Revenue] )
+
+// ============ Counts ============
+
+// Distinct orders. One order can have several lines.
+# Orders =
+    DISTINCTCOUNT ( sales[OrderKey] )
+
+// Order lines (rows of sales).
+# Order Lines =
+    COUNTROWS ( sales )
+
+// Customers who bought something in view.
+# Customers =
+    DISTINCTCOUNT ( sales[CustomerKey] )
+
+// Products that sold at least once in view.
+# Products Sold =
+    DISTINCTCOUNT ( sales[ProductKey] )
+
+// ============ Averages ============
+
+// Revenue per order.
+Average Order Value =
+    DIVIDE ( [Revenue], [# Orders] )
+
+// Units in an average order.
+Units per Order =
+    DIVIDE ( [Units Sold], [# Orders] )
+
+// Revenue per buying customer.
+Revenue per Customer =
+    DIVIDE ( [Revenue], [# Customers] )
+
+// Orders per buying customer.
+Orders per Customer =
+    DIVIDE ( [# Orders], [# Customers] )
+
+// ============ Delivery ============
+
+// Days from order to delivery, once per delivered order (not per line).
+Average Delivery Days =
+VAR _delivered =
+    CALCULATETABLE (
+        SUMMARIZE ( sales, sales[OrderKey], sales[OrderDate], sales[DeliveryDate] ),
+        NOT ISBLANK ( sales[DeliveryDate] )
+    )
+RETURN
+    AVERAGEX ( _delivered, DATEDIFF ( sales[OrderDate], sales[DeliveryDate], DAY ) )
+
+// Orders placed up to AsOf whose delivery is still to come.
+# Orders Not Delivered =
+    CALCULATE ( [# Orders], ISBLANK ( sales[DeliveryDate] ) )
+
+// ============ Time Intelligence ============
+// Prior-year measures shift only dates up to AsOf (date[DateWithSales]),
+// so the unfinished current year is compared with the same part of last year.
+
+// Revenue from 1 January to the last date in view.
+Revenue YTD =
+    CALCULATE ( [Revenue], DATESYTD ( 'date'[Date] ) )
+
+// Revenue in the same period one year earlier.
+Revenue PY =
+CALCULATE (
+    [Revenue],
+    CALCULATETABLE ( DATEADD ( 'date'[Date], -1, YEAR ), 'date'[DateWithSales] = TRUE )
+)
+
+// Year-to-date revenue for the same days one year earlier.
+Revenue PY YTD =
+CALCULATE (
+    [Revenue YTD],
+    CALCULATETABLE ( DATEADD ( 'date'[Date], -1, YEAR ), 'date'[DateWithSales] = TRUE )
+)
+
+// Change in revenue against last year. Blank when either year has no revenue.
+Revenue YoY =
+VAR _current = [Revenue]
+VAR _previous = [Revenue PY]
+RETURN
+    IF ( NOT ISBLANK ( _current ) && NOT ISBLANK ( _previous ), _current - _previous )
+
+// Change in revenue as a share of last year's revenue.
+Revenue YoY % =
+    DIVIDE ( [Revenue YoY], [Revenue PY] )
+
+// Margin in the same period one year earlier.
+Margin PY =
+CALCULATE (
+    [Margin],
+    CALCULATETABLE ( DATEADD ( 'date'[Date], -1, YEAR ), 'date'[DateWithSales] = TRUE )
+)
+
+// Orders in the same period one year earlier.
+# Orders PY =
+CALCULATE (
+    [# Orders],
+    CALCULATETABLE ( DATEADD ( 'date'[Date], -1, YEAR ), 'date'[DateWithSales] = TRUE )
+)
